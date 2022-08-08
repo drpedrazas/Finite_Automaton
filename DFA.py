@@ -31,19 +31,11 @@ class DFA():
         self.F[state] = True
 
     def add_transition(self, current, character, state):
-        if current not in self.transitions:
-            self.add_state(current)
-            if state not in self.transitions:
-                self.add_state(state)
-                self.transitions[current][character] = state
-            else:
-                self.transitions[current][character] = state
-        else:
-            if state not in self.transitions:
-                self.add_state(state)
-                self.transitions[current][character] = state
-            else:
-                self.transitions[current][character] = state
+        while current not in self.transitions:
+            self.add_state()
+        while state not in self.transitions:
+            self.add_state()
+        self.transitions[current][character] = state
 
     def process_string(self, string):
         curr = 0
