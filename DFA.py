@@ -1,11 +1,26 @@
+import pandas as pd
+import numpy as np
+
+
 class DFA():
-    def __init__(self, path=None):
-        if path:
-            pass
-        else:
+    def __init__(self, path=None, finals=None):
+        if not path:
             self.n_states = 1
             self.transitions = {0: {}}
             self.F = [False]
+
+        else:
+            states_matrix = pd.read_csv(path)
+            states_matrix.to_numpy()
+            self.n_states = states_matrix.size
+            for i in range(self.n_states):
+                self.transitions[i] = {}
+                for j in range(self.n_states):
+                    if np.isnan(states_matrix[i, j]):
+                        continue
+                    else:
+                        self.transitions[i][j] = states_matrix[i, j]
+            self.F = [i in finals for i in range(self.n_states)]
 
     def add_state(self, final=False):
         self.n_states += 1
@@ -30,15 +45,12 @@ class DFA():
             else:
                 self.transitions[current][character] = state
 
-    def _next_state(self, current, character):
-        return self.transitions[current][character]
-
     def process_string(self, string):
         curr = 0
         history = [curr]
         for letter in string:
             if letter in self.transitions[curr]:
-                curr = self._next_state(curr, letter)
+                curr = self.transitions[curr][letter]
                 history.append(curr)
             else:
                 return False, history
