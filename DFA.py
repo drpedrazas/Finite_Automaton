@@ -3,16 +3,17 @@ class DFA():
         if path:
             pass
         else:
-            self.transitions = dict()
-            self.F = set()
+            self.n_states = 1
+            self.transitions = {0: {}}
+            self.F = [False]
 
-    def add_state(self, new_state, final = False):
-        if new_state not in self.transitions:
-            self.transitions[new_state] = {}
-            if final:
-                self.F.add(new_state)
-        else:
-            pass
+    def add_state(self, final=False):
+        self.n_states += 1
+        self.transitions[self.n_states - 1] = dict()
+        self.F.append(final)
+
+    def set_final(self, state):
+        self.F[state] = True
 
     def add_transition(self, current, character, state):
         if current not in self.transitions:
@@ -28,3 +29,17 @@ class DFA():
                 self.transitions[current][character] = state
             else:
                 self.transitions[current][character] = state
+
+    def _next_state(self, current, character):
+        return self.transitions[current][character]
+
+    def process_string(self, string):
+        curr = 0
+        history = [curr]
+        for letter in string:
+            if letter in self.transitions[curr]:
+                curr = self._next_state(curr, letter)
+                history.append(curr)
+            else:
+                return False, history
+        return self.F[curr], history
