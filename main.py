@@ -11,7 +11,7 @@ while not done:
     while True:
         son_todas = input("son todas las transiciones? y/n: ")
         if son_todas.lower() in {"y","n","yes","no"}:
-            done = (lambda x: x in {"y","yes"})(son_todas.lower())
+            done = son_todas.lower() in {"y","yes","ye"}
             break
         else:
             print("me temo que no entiendo")
